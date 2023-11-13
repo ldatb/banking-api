@@ -1,0 +1,21 @@
+Table accounts {
+  account_number bigint [pk, unique, not null]
+  firstName string [not null]
+  lastName string [not null]
+  balance bigint [not null, default: 0]
+  default_currency string [not null, default: 'usd']
+  secret_token int [not null]
+  created_at timestamp [not null, default: `now()`]
+}
+
+Table transactions {
+  id string [pk, unique, not null]
+  amount bigint [not null]
+  currency string [not null, default: 'usd']
+  sender_account_number bigint [not null]
+  recipient_account_number bigint [not null]
+  timestamp timestamp [not null, default: `now()`]
+}
+
+Ref: accounts.account_number < transactions.sender_account_number
+Ref: accounts.account_number < transactions.recipient_account_number
