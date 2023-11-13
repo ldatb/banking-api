@@ -1,0 +1,722 @@
+openapi: 3.0.0
+info:
+  title: Banking API
+  version: 1.0.0
+  description: >-
+    This is a sample banking API that I used to learn a bunch of tools, such as
+    Kotlin, Spring, Gradle and Swagger. This is NOT inspired by any real world
+    applications and is most definitely not production-ready (nor will it ever
+    be), I'm simply using it as a learning tool.
+  contact:
+    name: Lucas de Ataides
+    email: ldatb@icloud.com
+    url: https://ldatb.com/
+  license:
+    name: MIT
+    url: https://opensource.org/license/mit/
+tags:
+  - name: account
+    description: Access to accounts
+  - name: transactions
+    description: Access to accounts' transactions
+  - name: admin
+    description: Admin operation
+paths:
+  # Account
+  /account:
+    summary: Access to accounts
+    post:
+      summary: Add a new account
+      operationId: addAccount
+      tags:
+        - account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountCreationRequest'
+      responses:
+        '201':
+          description: Account was created
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/AccountCreationResponse'
+        '400':
+          description: Invalid body
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/GenericErrorResponse'
+    get:
+      summary: Gets basic information of the account
+      operationId: getAccountByNumber
+      tags:
+        - account
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Account was found
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/AccountResponse'
+        '401':
+          description: Missing JWT in request
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/UnauthorizedErrorResponse'
+    delete:
+      summary: Deletes an account
+      operationId: deleteAccount
+      tags:
+        - account
+      security:
+        - BearerAuth: []
+      responses:
+        '204':
+          description: Account was deleted
+        '401':
+          description: Missing JWT in request
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/UnauthorizedErrorResponse'
+  /account/token:
+    put:
+      summary: Updates the secret token of an account
+      operationId: updateAccountToken
+      tags:
+        - account
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountUpdateTokenRequest'
+      responses:
+        '204':
+          description: Token was changed
+        '400':
+          description: Invalid body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorResponse'
+        '401':
+          description: Missing JWT in request
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/UnauthorizedErrorResponse'
+  /account/login:
+    post:
+      summary: Login to an account. Returns a JWT
+      operationId: loginToAccount
+      tags:
+       - account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountLoginRequest'
+      responses:
+        '200':
+          description: Login was successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountLoginResponse'
+        '400':
+          description: Invalid body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorResponse'
+        '401':
+          description: Invalid account number or password
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginErrorResponse'
+    delete:
+      summary: Logout of an account. Invalidates a JWT
+      operationId: logoutAccount
+      tags:
+       - account
+      security:
+        - BearerAuth: []
+      responses:
+        '204':
+          description: Logout was successful
+        '401':
+          description: Missing JWT in request
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/UnauthorizedErrorResponse'
+  # Transaction
+  /transaction:
+    get:
+      summary: Gets transaction information of the account
+      operationId: getAccountTransactions
+      tags:
+        - transactions
+      parameters:
+        - in: query
+          name: limit
+          description: 'How many transactions to return. Must be a number. Range is from 1 to 100. Default value is 10'
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+        - in: query
+          name: id
+          description: 'Search for an specific transaction'
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: before
+          description: 'Search only the transactions before this ID'
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: after
+          description: 'Search only the transactions after this ID'
+          required: false
+          schema:
+            type: string
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: "Account's transactions data was found. By default, returns 10 transactions per pery"
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/MultipleTransactionsResponse'
+        '404':
+          description: Query not found
+        '401':
+          description: Missing JWT in request
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/UnauthorizedErrorResponse'
+    post:
+      summary: Creates a new transaction
+      operationId: createTransaction
+      tags:
+        - transactions
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionRequest'
+      responses:
+        '201':
+          description: Transaction was created and must be authorized via secret token
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/TransactionResponse'
+        '401':
+          description: Missing JWT in request
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/UnauthorizedErrorResponse'
+  # Admin
+  /admin/login:
+    summary: Admin login / logout operations
+    post:
+      summary: Login to an admin account. Returns a JWT
+      operationId: loginToAdminAccount
+      tags:
+       - admin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminLoginRequest'
+      responses:
+        '200':
+          description: Login was successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountLoginResponse'
+        '400':
+          description: Invalid body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorResponse'
+        '401':
+          description: Invalid account number or password
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminLoginErrorResponse'
+    delete:
+      summary: Logout of an admin account. Invalidates a JWT
+      operationId: logoutAdminAccount
+      tags:
+       - account
+      security:
+        - BearerAuth: []
+      responses:
+        '204':
+          description: Logout was successful
+        '401':
+          description: Missing JWT in request
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/UnauthorizedErrorResponse'
+  /admin/accounts:
+    summary: Admin actions on accounts
+    get:
+      summary: Get an account
+      operationId: adminGetAccount
+      tags:
+        - admin
+      parameters:
+        - in: query
+          name: id
+          description: 'The ID of the account'
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 9223372036854776
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Account found
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/AccountResponse'
+        '404':
+          description: Account not found
+        '401':
+          description: Missing JWT in request
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/UnauthorizedErrorResponse'
+    put:
+      summary: Update an account
+      operationId: adminUpdateAccount
+      tags:
+        - admin
+      parameters:
+        - in: query
+          name: id
+          description: 'The ID of the account'
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 9223372036854776
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminUpdateAccountRequest'
+      responses:
+        '204':
+          description: Account updated successfully
+        '401':
+          description: Missing JWT in request
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/UnauthorizedErrorResponse'
+  /admin/transactions:
+    summary: Admin actions on transactions
+    get:
+      summary: Get a transaction
+      operationId: adminGetTransaction
+      tags:
+        - admin
+      parameters:
+        - in: query
+          name: id
+          description: 'The ID of the transaction'
+          required: true
+          schema:
+            type: string
+            example: 'H597eoMmzTjgRiaazeJm6Jep27FtwsKU'
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Transaction found
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/TransactionResponse'
+        '404':
+          description: Account not found
+        '401':
+          description: Missing JWT in request
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/UnauthorizedErrorResponse'
+    delete:
+      summary: Delete a transaction
+      operationId: adminDeleteTransaction
+      tags:
+        - admin
+      parameters:
+        - in: query
+          name: id
+          description: 'The ID of the transaction'
+          required: true
+          schema:
+            type: string
+            example: 'H597eoMmzTjgRiaazeJm6Jep27FtwsKU'
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Transaction deleted
+        '404':
+          description: Transaction not found
+        '401':
+          description: Missing JWT in request
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/UnauthorizedErrorResponse'
+components:
+  schemas:
+    # Account
+    AccountCreationRequest:
+      type: object
+      properties:
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: Doe
+        password:
+          type: string
+          example: Super_Secret_Password
+      required:
+        - firstName
+        - lastName
+        - password
+    AccountLoginRequest:
+      type: object
+      properties:
+        accountNumber:
+          type: number
+          format: int64
+          example: 9223372036854775
+        password:
+          type: string
+          example: Super_Secret_Password
+      required:
+        - accountNumber
+        - password
+    AccountUpdateTokenRequest:
+      type: object
+      properties:
+        newToken:
+          description: The new token that will be used in transactions
+          type: integer
+          example: 654321
+      required:
+        - newToken
+    AccountResponse:
+      type: object
+      properties:
+        error:
+          type: boolean
+          example: false
+        data:
+          type: object
+          properties:
+            accountNumber:
+              type: number
+              format: int64
+              example: 9223372036854775
+            firstName:
+              type: string
+              example: John
+            lastName:
+              type: string
+              example: Doe
+            balance:
+              description: 'Balance in account. The last 2 numbers represent the cents'
+              type: number
+              format: int64
+              example: 6713
+            currency:
+              description: 'The currency of the balance'
+              type: string
+              example: 'usd'
+    AccountCreationResponse:
+      type: object
+      properties:
+        error:
+          type: boolean
+          example: false
+        data:
+          type: object
+          properties:
+            accountNumber:
+              type: number
+              format: int64
+              example: 9223372036854775
+            firstName:
+              type: string
+              example: John
+            lastName:
+              type: string
+              example: Doe
+            secretToken:
+              description: This token will be used in transactions
+              type: integer
+              example: 123456
+    AccountLoginResponse:
+      type: object
+      properties:
+        error:
+          type: boolean
+          example: false
+        data:
+          type: object
+          properties:
+            tokenType:
+              type: string
+              example: Bearer
+            accessToken:
+              type: string
+              example: your.bearer.token
+            expiresIn:
+              type: number
+              example: 3600
+    # Transaction
+    TransactionRequest:
+      type: object
+      properties:
+        secretToken:
+          description: Authorization token
+          type: integer
+          example: 123456
+        amount:
+          type: integer
+          format: int64
+          example: -1000
+        currency:
+          type: string
+          example: 'usd'
+        kind:
+          type: string
+          example: 'direct transfer'
+        recipient:
+          type: number
+          format: int64
+          example: 4654321657
+    TransactionResponse:
+      type: object
+      properties:
+        error:
+          type: boolean
+          example: false
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              example: 'H597eoMmzTjgRiaazeJm6Jep27FtwsKU'
+            amount:
+              type: integer
+              format: int64
+              example: -1000
+            balanceAfterTransaction:
+              type: integer
+              format: int64
+              example: 12093
+            currency:
+              type: string
+              example: 'usd'
+            kind:
+              type: string
+              example: 'direct transfer'
+            timestamp:
+              type: string
+              description: 'Timestamp in ISO 8601'
+              example: '2023-11-13T22:20:11+0000'
+            sender:
+              type: object
+              properties:
+                accountNumber:
+                  type: number
+                  format: int64
+                  example: 123154
+                firstName:
+                  type: string
+                  example: John
+                lastName:
+                  type: string
+                  example: Snow
+            recipient:
+              type: object
+              properties:
+                accountNumber:
+                  type: number
+                  format: int64
+                  example: 4654321657
+                firstName:
+                  type: string
+                  example: Jane
+                lastName:
+                  type: string
+                  example: Doe
+    MultipleTransactionsResponse:
+      type: object
+      properties:
+        error:
+          type: boolean
+          example: false
+        nextTransactionId:
+          type: string
+          description: 'The transaction ID of the transaction that comes after the last one in this query'
+          example: 'PuMiA6sckWe2MaEuRGi2mV2sya89BuQy'
+        data:
+          type: array
+          minItems: 1
+          maxItems: 100
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                example: 'H597eoMmzTjgRiaazeJm6Jep27FtwsKU'
+              amount:
+                type: integer
+                format: int64
+                example: -1000
+              currency:
+                type: string
+                example: 'usd'
+              kind:
+                type: string
+                example: 'direct transfer'
+              timestamp:
+                type: string
+                description: 'Timestamp in ISO 8601'
+                example: '2023-11-13T22:20:11+0000'
+              sender:
+                type: object
+                properties:
+                  accountNumber:
+                    type: number
+                    format: int64
+                    example: 123154
+                  firstName:
+                    type: string
+                    example: John
+                  lastName:
+                    type: string
+                    example: Snow
+              recipient:
+                type: object
+                properties:
+                  accountNumber:
+                    type: number
+                    format: int64
+                    example: 4654321657
+                  firstName:
+                    type: string
+                    example: Jane
+                  lastName:
+                    type: string
+                    example: Doe
+    # Admin
+    AdminLoginRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          example: 'superadmin'
+        password:
+          type: string
+          example: 'Super_Secret_Password'
+      required:
+        - username
+        - password
+    AdminUpdateAccountRequest:
+      type: object
+      properties:
+        firstName:
+          type: string
+          example: 'John'
+        lastName:
+          type: string
+          example: 'Snow'
+    # Errors
+    GenericErrorResponse:
+      type: object
+      properties:
+        error:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: Invalid request
+    UnauthorizedErrorResponse:
+      type: object
+      properties:
+        error:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: Missing access token in request
+    LoginErrorResponse:
+      type: object
+      properties:
+        error:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: Invalid account number or password
+    AdminLoginErrorResponse:
+      type: object
+      properties:
+        error:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: Invalid username or password
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
