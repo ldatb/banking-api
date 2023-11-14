@@ -1,5 +1,6 @@
 package com.ldatb.learn.banking.exception
 
-import org.jetbrains.annotations.NotNull
+import org.springframework.http.HttpStatus
 
-class AccountNotFoundException(@NotNull message: String) : RuntimeException(message)
+class AccountNotFoundException(accountNumber: Long) :
+        CustomException("Account with number $accountNumber could not be found.", HttpStatus.NOT_FOUND)
