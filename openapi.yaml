@@ -275,7 +275,7 @@ paths:
       summary: Logout of an admin account. Invalidates a JWT
       operationId: logoutAdminAccount
       tags:
-       - account
+       - admin
       security:
         - BearerAuth: []
       responses:
