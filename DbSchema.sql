@@ -1,23 +1,34 @@
-CREATE TABLE `accounts` (
-    `account_number` bigint UNIQUE PRIMARY KEY NOT NULL,
-    `firstName` string NOT NULL,
-    `lastName` string NOT NULL,
-    `hashed_password` string NOT NULL,
-    `balance` bigint NOT NULL DEFAULT 0,
-    `default_currency` string NOT NULL DEFAULT "usd",
-    `secret_token` int NOT NULL,
-    `updated_at` timestamp NOT NULL DEFAULT (now()),
-    `created_at` timestamp NOT NULL DEFAULT (now())
+CREATE TABLE IF NOT EXISTS accounts
+(
+    accountNumber   bigint PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    firstName       varchar(16)        NOT NULL,
+    lastName        varchar(32)        NOT NULL,
+    hashedPassword  char(64)           NOT NULL,
+    balance         bigint             NOT NULL DEFAULT 0,
+    defaultCurrency char(3)            NOT NULL DEFAULT 'usd',
+    secretToken     int                NOT NULL,
+    updatedAt       datetime           NOT NULL DEFAULT (now()),
+    createdAt       datetime           NOT NULL DEFAULT (now())
 );
 
-CREATE TABLE `transactions` (
-    `id` string UNIQUE PRIMARY KEY NOT NULL,
-    `amount` bigint NOT NULL,
-    `currency` string NOT NULL DEFAULT "usd",
-    `sender_account_number` bigint NOT NULL,
-    `recipient_account_number` bigint NOT NULL,
-    `timestamp` timestamp NOT NULL DEFAULT (now())
+CREATE TABLE IF NOT EXISTS transactions
+(
+    id                     bigint PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    amount                 bigint             NOT NULL,
+    currency               char(3)            NOT NULL DEFAULT 'usd',
+    senderAccountNumber    bigint             NOT NULL,
+    recipientAccountNumber bigint             NOT NULL,
+    timestamp              datetime           NOT NULL DEFAULT (now())
 );
 
-ALTER TABLE `transactions` ADD FOREIGN KEY (`sender_account_number`) REFERENCES `accounts` (`account_number`);
-ALTER TABLE `transactions` ADD FOREIGN KEY (`recipient_account_number`) REFERENCES `accounts` (`account_number`);
+CREATE TABLE IF NOT EXISTS admins
+(
+    id             int PRIMARY KEY     NOT NULL AUTO_INCREMENT,
+    username       varchar(255) UNIQUE NOT NULL,
+    hashedPassword char(64)            NOT NULL
+);
+
+ALTER TABLE transactions
+    ADD FOREIGN KEY (senderAccountNumber) REFERENCES accounts (accountNumber);
+ALTER TABLE transactions
+    ADD FOREIGN KEY (recipientAccountNumber) REFERENCES accounts (accountNumber);
