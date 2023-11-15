@@ -7,8 +7,8 @@ CREATE TABLE IF NOT EXISTS accounts
     balance         bigint             NOT NULL DEFAULT 0,
     defaultCurrency char(3)            NOT NULL DEFAULT 'usd',
     secretToken     int                NOT NULL,
-    updatedAt       datetime           NOT NULL DEFAULT (now()),
-    createdAt       datetime           NOT NULL DEFAULT (now())
+    updatedAt       timestamp          NOT NULL DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,
+    createdAt       timestamp          NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE IF NOT EXISTS transactions
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS transactions
     currency               char(3)            NOT NULL DEFAULT 'usd',
     senderAccountNumber    bigint             NOT NULL,
     recipientAccountNumber bigint             NOT NULL,
-    timestamp              datetime           NOT NULL DEFAULT (now())
+    timestamp              timestamp          NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS admins
