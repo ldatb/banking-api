@@ -17,6 +17,8 @@ info:
 tags:
   - name: account
     description: Access to accounts
+  - name: auth
+    description: Access to authentication process
   - name: transactions
     description: Access to accounts' transactions
   - name: admin
@@ -41,13 +43,13 @@ paths:
           description: Account was created
           content:
             application/json:
-              schema: 
+              schema:
                 $ref: '#/components/schemas/AccountCreationResponse'
         '400':
           description: Invalid body
           content:
             application/json:
-              schema: 
+              schema:
                 $ref: '#/components/schemas/GenericErrorResponse'
     get:
       summary: Gets basic information of the account
@@ -61,13 +63,13 @@ paths:
           description: Account was found
           content:
             application/json:
-              schema: 
+              schema:
                 $ref: '#/components/schemas/AccountResponse'
         '401':
           description: Missing JWT in request
           content:
             application/json:
-              schema: 
+              schema:
                 $ref: '#/components/schemas/UnauthorizedErrorResponse'
     delete:
       summary: Deletes an account
@@ -83,7 +85,7 @@ paths:
           description: Missing JWT in request
           content:
             application/json:
-              schema: 
+              schema:
                 $ref: '#/components/schemas/UnauthorizedErrorResponse'
   /account/token:
     put:
@@ -112,14 +114,15 @@ paths:
           description: Missing JWT in request
           content:
             application/json:
-              schema: 
+              schema:
                 $ref: '#/components/schemas/UnauthorizedErrorResponse'
-  /account/login:
+  # Auth
+  /auth:
     post:
       summary: Login to an account. Returns a JWT
       operationId: loginToAccount
       tags:
-       - account
+        - auth
       requestBody:
         required: true
         content:
@@ -149,7 +152,7 @@ paths:
       summary: Logout of an account. Invalidates a JWT
       operationId: logoutAccount
       tags:
-       - account
+        - auth
       security:
         - BearerAuth: []
       responses:
@@ -159,7 +162,7 @@ paths:
           description: Missing JWT in request
           content:
             application/json:
-              schema: 
+              schema:
                 $ref: '#/components/schemas/UnauthorizedErrorResponse'
   # Transaction
   /transaction:
@@ -202,7 +205,7 @@ paths:
           description: "Account's transactions data was found. By default, returns 10 transactions per pery"
           content:
             application/json:
-              schema: 
+              schema:
                 $ref: '#/components/schemas/MultipleTransactionsResponse'
         '404':
           description: Query not found
@@ -210,7 +213,7 @@ paths:
           description: Missing JWT in request
           content:
             application/json:
-              schema: 
+              schema:
                 $ref: '#/components/schemas/UnauthorizedErrorResponse'
     post:
       summary: Creates a new transaction
@@ -230,63 +233,15 @@ paths:
           description: Transaction was created and must be authorized via secret token
           content:
             application/json:
-              schema: 
+              schema:
                 $ref: '#/components/schemas/TransactionResponse'
         '401':
           description: Missing JWT in request
           content:
             application/json:
-              schema: 
+              schema:
                 $ref: '#/components/schemas/UnauthorizedErrorResponse'
   # Admin
-  /admin/login:
-    summary: Admin login / logout operations
-    post:
-      summary: Login to an admin account. Returns a JWT
-      operationId: loginToAdminAccount
-      tags:
-       - admin
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AdminLoginRequest'
-      responses:
-        '200':
-          description: Login was successful
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AccountLoginResponse'
-        '400':
-          description: Invalid body
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericErrorResponse'
-        '401':
-          description: Invalid account number or password
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AdminLoginErrorResponse'
-    delete:
-      summary: Logout of an admin account. Invalidates a JWT
-      operationId: logoutAdminAccount
-      tags:
-       - admin
-      security:
-        - BearerAuth: []
-      responses:
-        '204':
-          description: Logout was successful
-        '401':
-          description: Missing JWT in request
-          content:
-            application/json:
-              schema: 
-                $ref: '#/components/schemas/UnauthorizedErrorResponse'
   /admin/accounts:
     summary: Admin actions on accounts
     get:
@@ -310,7 +265,7 @@ paths:
           description: Account found
           content:
             application/json:
-              schema: 
+              schema:
                 $ref: '#/components/schemas/AccountResponse'
         '404':
           description: Account not found
@@ -318,7 +273,7 @@ paths:
           description: Missing JWT in request
           content:
             application/json:
-              schema: 
+              schema:
                 $ref: '#/components/schemas/UnauthorizedErrorResponse'
     put:
       summary: Update an account
@@ -349,7 +304,7 @@ paths:
           description: Missing JWT in request
           content:
             application/json:
-              schema: 
+              schema:
                 $ref: '#/components/schemas/UnauthorizedErrorResponse'
   /admin/transactions:
     summary: Admin actions on transactions
@@ -373,7 +328,7 @@ paths:
           description: Transaction found
           content:
             application/json:
-              schema: 
+              schema:
                 $ref: '#/components/schemas/TransactionResponse'
         '404':
           description: Account not found
@@ -381,7 +336,7 @@ paths:
           description: Missing JWT in request
           content:
             application/json:
-              schema: 
+              schema:
                 $ref: '#/components/schemas/UnauthorizedErrorResponse'
     delete:
       summary: Delete a transaction
@@ -407,7 +362,7 @@ paths:
           description: Missing JWT in request
           content:
             application/json:
-              schema: 
+              schema:
                 $ref: '#/components/schemas/UnauthorizedErrorResponse'
 components:
   schemas:
@@ -431,15 +386,14 @@ components:
     AccountLoginRequest:
       type: object
       properties:
-        accountNumber:
-          type: number
-          format: int64
-          example: 9223372036854775
+        accountLogin:
+          type: string
+          example: 'someaccountlogin'
         password:
           type: string
           example: Super_Secret_Password
       required:
-        - accountNumber
+        - accountLogin
         - password
     AccountUpdateTokenRequest:
       type: object
@@ -459,10 +413,13 @@ components:
         data:
           type: object
           properties:
-            accountNumber:
-              type: number
-              format: int64
-              example: 9223372036854775
+            accountLogin:
+              type: string
+              example: 'someaccountlogin'
+            transferKey:
+              description: Instead of relying on the account login for transactions, which can lead to security issues, a different value is used for transactions
+              type: string
+              example: '550e8400-e29b-41d4-a716-446655440000'
             firstName:
               type: string
               example: John
@@ -487,20 +444,23 @@ components:
         data:
           type: object
           properties:
-            accountNumber:
-              type: number
-              format: int64
-              example: 9223372036854775
+            accountLogin:
+              type: string
+              example: 'someaccountlogin'
+            transferKey:
+              description: Instead of relying on the account login for transactions, which can lead to security issues, a different value is used for transactions
+              type: string
+              example: '550e8400-e29b-41d4-a716-446655440000'
+            secretToken:
+              description: This token will be used in transactions
+              type: integer
+              example: 123456
             firstName:
               type: string
               example: John
             lastName:
               type: string
               example: Doe
-            secretToken:
-              description: This token will be used in transactions
-              type: integer
-              example: 123456
     AccountLoginResponse:
       type: object
       properties:
@@ -538,9 +498,8 @@ components:
           type: string
           example: 'direct transfer'
         recipient:
-          type: number
-          format: int64
-          example: 4654321657
+          type: string
+          example: '550e8400-e29b-41d4-a716-446655440000'
     TransactionResponse:
       type: object
       properties:
@@ -551,8 +510,9 @@ components:
           type: object
           properties:
             id:
-              type: string
-              example: 'H597eoMmzTjgRiaazeJm6Jep27FtwsKU'
+              type: integer
+              format: int64
+              example: 123456789
             amount:
               type: integer
               format: int64
@@ -574,10 +534,9 @@ components:
             sender:
               type: object
               properties:
-                accountNumber:
-                  type: number
-                  format: int64
-                  example: 123154
+                transferKey:
+                  type: string
+                  example: '550e8400-e29b-41d4-a716-446655440000'
                 firstName:
                   type: string
                   example: John
@@ -587,10 +546,9 @@ components:
             recipient:
               type: object
               properties:
-                accountNumber:
-                  type: number
-                  format: int64
-                  example: 4654321657
+                transferKey:
+                  type: string
+                  example: '550e8400-e29b-41d4-a716-446655440000'
                 firstName:
                   type: string
                   example: Jane
@@ -615,8 +573,9 @@ components:
             type: object
             properties:
               id:
-                type: string
-                example: 'H597eoMmzTjgRiaazeJm6Jep27FtwsKU'
+                type: integer
+                format: int64
+                example: 123456789
               amount:
                 type: integer
                 format: int64
@@ -634,10 +593,9 @@ components:
               sender:
                 type: object
                 properties:
-                  accountNumber:
-                    type: number
-                    format: int64
-                    example: 123154
+                  transferKey:
+                    type: string
+                    example: '550e8400-e29b-41d4-a716-446655440000'
                   firstName:
                     type: string
                     example: John
@@ -647,29 +605,15 @@ components:
               recipient:
                 type: object
                 properties:
-                  accountNumber:
-                    type: number
-                    format: int64
-                    example: 4654321657
+                  transferKey:
+                    type: string
+                    example: '550e8400-e29b-41d4-a716-446655440000'
                   firstName:
                     type: string
                     example: Jane
                   lastName:
                     type: string
                     example: Doe
-    # Admin
-    AdminLoginRequest:
-      type: object
-      properties:
-        username:
-          type: string
-          example: 'superadmin'
-        password:
-          type: string
-          example: 'Super_Secret_Password'
-      required:
-        - username
-        - password
     AdminUpdateAccountRequest:
       type: object
       properties:
@@ -707,15 +651,6 @@ components:
         message:
           type: string
           example: Invalid account number or password
-    AdminLoginErrorResponse:
-      type: object
-      properties:
-        error:
-          type: boolean
-          example: true
-        message:
-          type: string
-          example: Invalid username or password
   securitySchemes:
     BearerAuth:
       type: http
