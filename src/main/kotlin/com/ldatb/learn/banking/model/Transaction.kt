@@ -9,20 +9,20 @@ import java.time.Instant
 data class Transaction(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    val id: Long,
+    var id: Long,
 
     @Column(name = "amount", nullable = false)
-    val amount: Long,
+    var amount: Long,
 
     @Column(name = "currency", nullable = false)
-    val currency: String = "usd",
+    var currency: String = "usd",
 
     @Column(name = "sender_transfer_key")
-    val senderTransferKey: String,
+    var senderTransferKey: String,
 
     @Column(name = "sender_transfer_key")
-    val recipientTransferKey: String,
+    var recipientTransferKey: String,
 
     @Column(name = "timestamp")
-    val timestamp: Timestamp = Timestamp.from(Instant.now()),
+    var timestamp: Timestamp = Timestamp.from(Instant.now()),
 )
