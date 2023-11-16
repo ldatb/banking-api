@@ -4,6 +4,7 @@ import com.ldatb.learn.banking.util.generateRandomSecretToken
 import jakarta.persistence.*
 import java.sql.Timestamp
 import java.time.Instant
+import java.util.UUID
 
 @Entity
 @Table(name = "accounts")
@@ -13,7 +14,7 @@ data class Account (
     val accountId: Long,
 
     @Column(name = "account_transfer_key", length = 36, nullable = false)
-    val accountTransferKey: String,
+    val accountTransferKey: String = UUID.randomUUID().toString(),
 
     @Column(name = "password", nullable = false)
     val password: String,
