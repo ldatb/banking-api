@@ -7,6 +7,7 @@ import com.ldatb.learn.banking.repository.AccountRepository
 import com.ldatb.learn.banking.service.AccountService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -20,6 +21,7 @@ class AccountController(
     private val accountService: AccountService
 ) {
     @PostMapping()
+    @Transactional
     fun registerAccount(@RequestBody @Validated data: CreateAccountDTO): ResponseEntity<Any> {
         if (accountRepository.findAccountByLogin(data.login) != null) {
             return ResponseEntity.badRequest().body(
