@@ -7,6 +7,7 @@ import com.auth0.jwt.exceptions.JWTDecodeException
 import com.auth0.jwt.exceptions.JWTVerificationException
 import com.ldatb.learn.banking.config.AppConfig
 import com.ldatb.learn.banking.model.Account
+import org.springframework.context.annotation.Bean
 import org.springframework.stereotype.Service
 import java.lang.RuntimeException
 import java.time.LocalDateTime
