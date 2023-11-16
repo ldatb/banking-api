@@ -5,4 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface TransactionRepository : JpaRepository<Transaction, Long>
+interface TransactionRepository : JpaRepository<Transaction, Long> {
+    fun getTransactionByTransactionId(transactionId: Long): Transaction?
+    fun getTransactionsBySenderTransferKey(transferKey: String): List<Transaction>?
+    fun getTransactionsByRecipientTransferKey(transferKey: String): List<Transaction>?
+}

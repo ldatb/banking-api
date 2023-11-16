@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface AccountRepository : JpaRepository<Account, Long> {
-    fun existsAccountByAccountNumber(accountNumber: Long): Boolean
-    fun findAccountByAccountNumber(accountNumber: Long): Account?
+    fun existsAccountByAccountTransferKey(transferKey: String): Boolean
+    fun getAccountByAccountTransferKey(transferKey: String): Account?
 }
