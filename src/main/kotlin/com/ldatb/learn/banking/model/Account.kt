@@ -18,8 +18,8 @@ data class Account(
     @Column(name = "login")
     val login: String,
 
-    @Column(name = "password", nullable = false)
-    val password: String,
+    @Column(name = "hashed_password", nullable = false)
+    val hashedPassword: String,
 
     @Column(name = "transfer_key", length = 36, nullable = false)
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -62,9 +62,9 @@ data class Account(
         return mutableListOf(SimpleGrantedAuthority("ROLE_USER"))
     }
 
-    override fun getUsername(): String = this.id.toString()
+    override fun getPassword(): String = this.hashedPassword
 
-    override fun getPassword(): String = this.password
+    override fun getUsername(): String = this.id.toString()
 
     override fun isAccountNonExpired(): Boolean = true
 

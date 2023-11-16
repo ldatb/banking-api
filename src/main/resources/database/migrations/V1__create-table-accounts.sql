@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS accounts
 (
     id               bigint PRIMARY KEY  NOT NULL,
     login            varchar(255) UNIQUE NOT NULL,
-    password         char(64)            NOT NULL,
+    hashed_password  char(64)            NOT NULL,
     transfer_key     char(36) UNIQUE     NOT NULL,
     secret_token     int                 NOT NULL,
     first_name       varchar(16)         NOT NULL,
