@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("auth")
 class AuthController(
-    private val accountRepository: AccountRepository,
     private val authenticationManager: AuthenticationManager,
     private val tokenService: TokenService
 ) {
@@ -28,10 +27,5 @@ class AuthController(
         val auth = authenticationManager.authenticate(usernamePasswordToken)
         val token = tokenService.generateToken(auth.principal as Account)
         return ResponseEntity.ok(LoginResponseDTO(token))
-    }
-
-    @DeleteMapping()
-    fun logoutOfAccount(): ResponseEntity<Account> {
-        TODO()
     }
 }

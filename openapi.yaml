@@ -148,22 +148,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoginErrorResponse'
-    delete:
-      summary: Logout of an account. Invalidates a JWT
-      operationId: logoutAccount
-      tags:
-        - auth
-      security:
-        - BearerAuth: []
-      responses:
-        '204':
-          description: Logout was successful
-        '401':
-          description: Missing JWT in request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UnauthorizedErrorResponse'
   # Transaction
   /transaction:
     get:
