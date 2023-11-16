@@ -10,16 +10,4 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("transaction")
-class TransactionController(private val transactionService: TransactionService) {
-    // GET ACCOUNT'S TRANSACTIONS
-    @GetMapping
-    fun getAccountTransactions(): ResponseEntity<List<Transaction>> {
-        TODO()
-    }
-
-    // CREATE NEW TRANSACTION
-    @PostMapping
-    fun createNewTransaction(): ResponseEntity<Transaction> {
-        TODO()
-    }
-}
+class TransactionController(private val transactionService: TransactionService)

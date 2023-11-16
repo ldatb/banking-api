@@ -1,49 +1,22 @@
 package com.ldatb.learn.banking.controller
 
+import com.ldatb.learn.banking.dto.request.CreateAccountDTO
 import com.ldatb.learn.banking.model.Account
-import com.ldatb.learn.banking.service.AccountService
+import com.ldatb.learn.banking.repository.AccountRepository
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("account")
-class AccountController(private val accountService: AccountService) {
-    // GET
-    @GetMapping
-    fun getAccountByNumber(): ResponseEntity<Account> {
-        TODO()
-    }
-
-    // LOGIN AND LOGOUT
-    @PostMapping("login")
-    fun loginToAccount(): ResponseEntity<Account> {
-        TODO()
-    }
-
-    @DeleteMapping("login")
-    fun logoutOfAccount(): ResponseEntity<Account> {
-        TODO()
-    }
-
-    // UPDATE
-    @PutMapping("token")
-    fun updateAccountSecretToken(): ResponseEntity<Account> {
-        TODO()
-    }
-
-    // CREATE AND DELETE
-    @PostMapping
-    fun createAccount(): ResponseEntity<Account> {
-        TODO()
-    }
-
-    @DeleteMapping
-    fun deleteAccount(): ResponseEntity<Account> {
+class AccountController(
+    private val accountRepository: AccountRepository
+) {
+    @PostMapping()
+    fun registerAccount(@RequestBody @Validated data: CreateAccountDTO): ResponseEntity<Account> {
         TODO()
     }
 }
