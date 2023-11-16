@@ -34,6 +34,9 @@ data class Account (
     @Column(name = "default_currency")
     val defaultCurrency: String = "usd",
 
+    @Column(name = "role")
+    val role: String = "USER",
+
     @Column(name = "updated_at")
     val updatedAt: Timestamp = Timestamp.from(Instant.now()),
 

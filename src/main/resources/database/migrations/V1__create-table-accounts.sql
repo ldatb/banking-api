@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS accounts
     last_name        varchar(32)        NOT NULL,
     balance          bigint             NOT NULL DEFAULT 0,
     default_currency char(3)            NOT NULL DEFAULT 'usd',
+    role             varchar(255)       NOT NULL,
     updated_at       timestamp          NOT NULL DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,
     created_at       timestamp          NOT NULL DEFAULT (now())
 );
