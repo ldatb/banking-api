@@ -12,5 +12,4 @@ class AuthService(
 ) : UserDetailsService {
     override fun loadUserByUsername(username: String): UserDetails =
         accountRepository.findByLogin(username)
-            ?: throw AccountNotFoundException(username)
 }
