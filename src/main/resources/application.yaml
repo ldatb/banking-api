@@ -9,6 +9,8 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
 server:
   port: 8080
+app:
+  jwt-token: my-32-character-ultra-secure-and-ultra-long-secret
 ---
 spring:
   profiles: deploy
@@ -21,3 +23,5 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
 server:
   port: 3000
+app:
+  jwt-token: my-32-character-ultra-secure-and-ultra-long-secret
