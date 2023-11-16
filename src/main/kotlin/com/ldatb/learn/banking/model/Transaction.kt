@@ -20,7 +20,7 @@ data class Transaction(
     @Column(name = "sender_transfer_key")
     var senderTransferKey: String,
 
-    @Column(name = "sender_transfer_key")
+    @Column(name = "recipient_transfer_key")
     var recipientTransferKey: String,
 
     @Column(name = "timestamp")

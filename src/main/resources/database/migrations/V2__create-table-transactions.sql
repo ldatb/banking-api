@@ -9,6 +9,6 @@ CREATE TABLE IF NOT EXISTS transactions
 );
 
 ALTER TABLE transactions
-    ADD FOREIGN KEY (senderAccountNumber) REFERENCES accounts (accountNumber);
+    ADD FOREIGN KEY (sender_transfer_key) REFERENCES accounts (transfer_key);
 ALTER TABLE transactions
-    ADD FOREIGN KEY (recipientAccountNumber) REFERENCES accounts (accountNumber);
+    ADD FOREIGN KEY (recipient_transfer_key) REFERENCES accounts (transfer_key);
