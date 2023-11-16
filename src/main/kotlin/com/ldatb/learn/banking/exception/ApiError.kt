@@ -1,10 +1,10 @@
-package com.ldatb.learn.banking.dto.response
+package com.ldatb.learn.banking.exception
 
 import org.springframework.web.bind.annotation.ResponseBody
 
 @JvmRecord
 @ResponseBody
-data class ErrorResponseDTO(
+data class ApiError(
     val error: Boolean = true,
-    val message: String
+    val errors: List<String>,
 )

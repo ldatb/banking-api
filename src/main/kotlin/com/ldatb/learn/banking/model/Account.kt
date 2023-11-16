@@ -50,9 +50,6 @@ data class Account(
     @Column(name = "created_at")
     val createdAt: Timestamp = Timestamp.from(Instant.now()),
 ) : UserDetails {
-    @ManyToMany(mappedBy = "transactions")
-    val transactions: List<Transaction> = listOf()
-
     fun toCreateAccountDetailsDTO(): CreateAccountDetailsDTO =
         CreateAccountDetailsDTO(
             login = this.login,

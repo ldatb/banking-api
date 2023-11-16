@@ -10,7 +10,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 @Configuration
 @EnableConfigurationProperties(AppProperties::class)
-@EnableJpaRepositories
 class AppConfig {
     @Bean
     fun appConfiguration(): AppProperties = AppProperties()

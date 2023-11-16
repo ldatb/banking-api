@@ -1,15 +1,15 @@
 spring:
   profiles:
-    active: dev, prod
     default: dev
   application:
     name: banking
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     database: mysql
     hibernate:
       ddl-auto: update
-  datasource:
-    driver-class-name: com.mysql.jdbc.Driver
+    open-in-view: false
 app:
   jwt-token: my-32-character-ultra-secure-and-ultra-long-secret
 ---
@@ -24,7 +24,7 @@ spring:
     username: db_user
     password: P@ssW0rd
 server:
-  port: 8080
+  port: 8089
 ---
 spring:
   config:
@@ -34,5 +34,7 @@ spring:
     url: ${DB_JDBC}
     username: ${DB_USER}
     password: ${DB_PASS}
+  jpa:
+    show-sql: false
 server:
   port: 3000

@@ -2,6 +2,7 @@ package com.ldatb.learn.banking.controller
 
 import com.ldatb.learn.banking.dto.request.AuthenticationDTO
 import com.ldatb.learn.banking.dto.response.LoginResponseDTO
+import com.ldatb.learn.banking.dto.response.LoginResponseDataDTO
 import com.ldatb.learn.banking.model.Account
 import com.ldatb.learn.banking.repository.AccountRepository
 import com.ldatb.learn.banking.security.TokenService
@@ -22,10 +23,10 @@ class AuthController(
     private val tokenService: TokenService
 ) {
     @PostMapping()
-    fun loginToAccount(@RequestBody @Validated data: AuthenticationDTO): ResponseEntity<LoginResponseDTO> {
+    fun loginToAccount(@RequestBody data: AuthenticationDTO): ResponseEntity<LoginResponseDTO> {
         val usernamePasswordToken = UsernamePasswordAuthenticationToken(data.login, data.password)
         val auth = authenticationManager.authenticate(usernamePasswordToken)
         val token = tokenService.generateToken(auth.principal as Account)
-        return ResponseEntity.ok(LoginResponseDTO(token))
+        return ResponseEntity.ok(LoginResponseDTO(data = LoginResponseDataDTO(token)))
     }
 }
