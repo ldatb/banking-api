@@ -9,7 +9,7 @@ import java.time.Instant
 data class Transaction(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    val transactionId: Long,
+    val id: Long,
 
     @Column(name = "amount", nullable = false)
     val amount: Long,

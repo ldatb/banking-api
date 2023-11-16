@@ -11,10 +11,10 @@ import java.util.UUID
 data class Account (
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    val accountId: Long,
+    val id: Long,
 
     @Column(name = "transfer_key", length = 36, nullable = false)
-    val accountTransferKey: String = UUID.randomUUID().toString(),
+    val transferKey: String = UUID.randomUUID().toString(),
 
     @Column(name = "password", nullable = false)
     val password: String,
