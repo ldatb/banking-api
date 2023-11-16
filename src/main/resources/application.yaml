@@ -1,26 +1,33 @@
 spring:
-  profiles: default
+  profiles:
+    active: dev, prod
+    default: dev
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
   application:
     name: banking
   datasource:
     url: jdbc:mysql://localhost:3306/banking
     username: db_user
     password: P@ssW0rd
-    driver-class-name: com.mysql.jdbc.Driver
 server:
   port: 8080
 app:
   jwt-token: my-32-character-ultra-secure-and-ultra-long-secret
 ---
 spring:
-  profiles: deploy
+  config:
+    activate:
+      on-profile: prod
   application:
     name: banking
   datasource:
     url: ${DB_JDBC}
     username: ${DB_USER}
     password: ${DB_PASS}
-    driver-class-name: com.mysql.jdbc.Driver
 server:
   port: 3000
 app:
