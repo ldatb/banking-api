@@ -1,7 +1,6 @@
 package com.ldatb.learn.banking.service
 
 import com.ldatb.learn.banking.dto.request.CreateAccountRequestDTO
-import com.ldatb.learn.banking.exception.AccountNotFoundException
 import com.ldatb.learn.banking.model.Account
 import com.ldatb.learn.banking.repository.AccountRepository
 import com.ldatb.learn.banking.security.TokenService

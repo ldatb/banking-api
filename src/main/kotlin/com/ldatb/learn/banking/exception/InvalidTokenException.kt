@@ -1,7 +1,5 @@
 package com.ldatb.learn.banking.exception
 
-import java.lang.Exception
-
 class InvalidTokenException(
     message: String? = "No message available",
     details: String? = "No details available",

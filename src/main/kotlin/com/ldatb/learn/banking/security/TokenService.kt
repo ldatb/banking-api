@@ -2,7 +2,6 @@ package com.ldatb.learn.banking.security
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
-import com.auth0.jwt.interfaces.Clock
 import com.ldatb.learn.banking.config.AppConfig
 import com.ldatb.learn.banking.model.Account
 import org.springframework.stereotype.Service

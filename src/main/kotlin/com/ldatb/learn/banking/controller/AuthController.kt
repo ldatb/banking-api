@@ -6,11 +6,9 @@ import com.ldatb.learn.banking.dto.response.LoginResponseDTO
 import com.ldatb.learn.banking.dto.response.LoginResponseDataDTO
 import com.ldatb.learn.banking.exception.AccountNotFoundException
 import com.ldatb.learn.banking.exception.ApiException
-import com.ldatb.learn.banking.exception.InvalidTokenException
 import com.ldatb.learn.banking.model.Account
 import com.ldatb.learn.banking.security.TokenService
 import com.ldatb.learn.banking.service.AccountService
-import com.ldatb.learn.banking.service.AuthService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
