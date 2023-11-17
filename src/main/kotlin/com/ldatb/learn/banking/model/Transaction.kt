@@ -4,6 +4,17 @@ import jakarta.persistence.* // ktlint-disable no-wildcard-imports
 import java.sql.Timestamp
 import java.time.Instant
 
+/**
+ * A Transaction represents the exchange of balance between 2 Accounts.
+ *
+ * @param id is the ID for this transaction
+ * @param amount is the amount of balance that is being exchanged
+ * @param currency the currency of this transaction
+ * @param senderTransferKey is the [Account.transferKey] of the account that's sending the amounts
+ * @param recipientTransferKey is the transfer key [Account.transferKey] of the account that's receiving the amounts
+ * @param timestamp timestamp of when the transaction was made
+ * @see [Account]
+ */
 @Entity
 @Table(name = "transactions")
 data class Transaction(

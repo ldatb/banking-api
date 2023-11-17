@@ -18,6 +18,13 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
+/**
+ * The REST controller for the `/auth` endpoint
+ *
+ * @param authenticationManager is an instance of the [AuthenticationManager] interface
+ * @param tokenService is the service for the authentication processes
+ * @param accountService is the service for the [Account] entity
+ */
 @RestController
 @RequestMapping("auth")
 class AuthController(
@@ -25,8 +32,17 @@ class AuthController(
     private val tokenService: TokenService,
     private val accountService: AccountService
 ) {
+    /**
+     * Login to account. Creates a JWT that can be used to authenticate the user into
+     * other endpoints
+     *
+     * @param data is the information required to create the token. Is an instance of [AuthenticationRequestDTO]
+     * @return a [ResponseEntity]
+     * @see [AuthenticationRequestDTO]
+     */
     @PostMapping()
     fun loginToAccount(@RequestBody data: AuthenticationRequestDTO): ResponseEntity<Any> {
+        // No Account was found with this login, return AccountNotFoundException
         if (accountService.getAccountByLogin(data.login) == null) {
             return ResponseEntity.badRequest().body(
                 AccountNotFoundException(
@@ -36,9 +52,12 @@ class AuthController(
             )
         }
 
+        // Creates the authentication for the account
         val usernamePasswordToken = UsernamePasswordAuthenticationToken(data.login, data.password)
         val auth = authenticationManager.authenticate(usernamePasswordToken)
 
+        // Tries to create the account. Since it's a process that can fail, enclose it in a
+        // try-catch and return either the token, or the error
         return try {
             val token = tokenService.generateToken(auth.principal as Account)
             ResponseEntity.ok(LoginResponseDTO(data = LoginResponseDataDTO(token)))

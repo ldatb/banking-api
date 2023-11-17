@@ -7,15 +7,27 @@ import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
+/**
+ * Configures custom app properties and CORS
+ */
 @Configuration
 @EnableConfigurationProperties(AppProperties::class)
 class AppConfig {
+    /**
+     * A Bean that enables the custom app properties
+     *
+     * @return [AppProperties]
+     */
     @Bean
     fun appConfiguration(): AppProperties = AppProperties()
 
+    /**
+     * A Bean that configures CORS for development purposes
+     *
+     * @return [CorsConfigurationSource]
+     */
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
-        // allow localhost for dev purposes
         val configuration = CorsConfiguration()
         configuration.allowedOrigins = listOf("http://localhost:3000", "http://localhost:8080")
         configuration.allowedMethods = listOf("GET", "POST", "PUT", "DELETE")
