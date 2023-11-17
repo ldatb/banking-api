@@ -32,7 +32,7 @@ class AccountService(
      */
     fun createAccount(data: CreateAccountRequestDTO): Account {
         // Create new [Account] instance based on the given data
-        val newAccount = Account(
+        var newAccount = Account(
             login = data.login,
             hashedPassword = BCryptPasswordEncoder().encode(data.password),
             firstName = data.firstName,
@@ -45,7 +45,7 @@ class AccountService(
         }
 
         // Save the new [Account] into the database
-        accountRepository.save(newAccount)
+        newAccount = accountRepository.createAccount(account = newAccount)
         return newAccount
     }
 
