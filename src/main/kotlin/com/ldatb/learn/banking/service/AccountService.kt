@@ -13,7 +13,7 @@ import java.util.UUID
 @Service
 class AccountService(
     private val accountRepository: AccountRepository,
-    private val tokenService: TokenService,
+    private val tokenService: TokenService
 ) {
     // CREATE
     fun createAccount(data: CreateAccountRequestDTO): Account {
