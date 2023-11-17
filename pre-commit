@@ -1,0 +1,11 @@
+#!/bin/bash
+
+echo "Running git pre-commit hook"
+
+# KTlint
+./gradlew ktlintCheck --daemon
+STATUS=$?
+[ $STATUS -ne 0 ] && exit 1
+
+# Success
+exit 0

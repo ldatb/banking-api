@@ -46,7 +46,14 @@ allprojects {
     apply plugin: "org.jlleitschuh.gradle.ktlint"
 }
 
+task installGitHook(type: Copy) {
+    from new File(rootProject.rootDir, "pre-commit")
+    into { new File(rootProject.rootDir, ".git/hooks") }
+    fileMode 0777
+}
+
 tasks.withType(KotlinCompile) {
+    dependsOn tasks.getByPath(":installGitHook")
     kotlinOptions {
         freeCompilerArgs += '-Xjsr305=strict'
         jvmTarget = '17'
