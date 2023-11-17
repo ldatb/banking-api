@@ -5,35 +5,44 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.security.core.userdetails.UserDetails
 
 /**
- * Implements the repository functions for the [com.ldatb.learn.banking.model.Account] entity.
- * Extends a [org.springframework.data.jpa.repository.JpaRepository] interface
+ * Implements the repository functions for the [Account] entity.
+ * Extends a [JpaRepository] interface
  */
 interface AccountRepository : JpaRepository<Account, Long> {
     /**
-     * Finds an [org.springframework.security.core.userdetails.UserDetails] entity that
-     * is extended by the [com.ldatb.learn.banking.model.Account]
+     * Finds an [UserDetails] entity that
+     * is extended by the [Account]
      *
-     * @param login a String equivalent to [com.ldatb.learn.banking.model.Account.login]
+     * @param login a String equivalent to [Account.login]
      *
-     * @return an [org.springframework.security.core.userdetails.UserDetails] entity
+     * @return an [UserDetails] entity
      */
     fun findByLogin(login: String): UserDetails
 
     /**
-     * Finds an [com.ldatb.learn.banking.model.Account] based on its login
+     * Finds an [Account] based on its [Account.login]
      *
-     * @param login a String equivalent to [com.ldatb.learn.banking.model.Account.login]
+     * @param login a String equivalent to [Account.login]
      *
-     * @return an [com.ldatb.learn.banking.model.Account] entity
+     * @return an [Account] entity
      */
     fun findAccountByLogin(login: String): Account?
 
     /**
-     * Finds an [com.ldatb.learn.banking.model.Account] based on its transferKey
+     * Finds an [Account] based on its [Account.transferKey]
      *
-     * @param transferKey a String equivalent to [com.ldatb.learn.banking.model.Account.transferKey]
+     * @param transferKey a String equivalent to [Account.transferKey]
      *
-     * @return an [com.ldatb.learn.banking.model.Account] entity
+     * @return an [Account] entity
      */
     fun findAccountByTransferKey(transferKey: String): Account?
+
+    /**
+     * Delete an [Account] based on its [Account.login]
+     *
+     * @param login a String equivalent to [Account.login]
+     *
+     * @return a Boolean with whether the account was deleted
+     */
+    fun deleteAccountByLogin(login: String): Boolean
 }

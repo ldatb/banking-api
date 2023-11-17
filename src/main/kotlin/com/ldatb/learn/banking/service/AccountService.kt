@@ -1,5 +1,6 @@
 package com.ldatb.learn.banking.service
 
+import com.ldatb.learn.banking.controller.AccountController
 import com.ldatb.learn.banking.dto.request.CreateAccountRequestDTO
 import com.ldatb.learn.banking.model.Account
 import com.ldatb.learn.banking.repository.AccountRepository
@@ -60,7 +61,7 @@ class AccountService(
 
     /**
      * Fetches an [Account.login] based on the [request] given by
-     * the [com.ldatb.learn.banking.controller.AccountController]
+     * the [AccountController]
      *
      * @param request the [request] values
      * @return a String containing the [Account.login]
@@ -70,7 +71,7 @@ class AccountService(
 
     /**
      * Fetches an [Account] based on the [request] given by the
-     * [com.ldatb.learn.banking.controller.AccountController]
+     * [AccountController]
      *
      * @param request the [request] values
      * @return an optional [Account] entity
@@ -80,7 +81,7 @@ class AccountService(
 
     /**
      * Fetches an [Account] based on the [transferKey] given by the
-     * [com.ldatb.learn.banking.controller.AccountController]
+     * [AccountController]
      *
      * @param transferKey the [Account.transferKey] value
      * @return an optional [Account] entity
@@ -90,4 +91,14 @@ class AccountService(
 
     // UPDATE
     // DELETE
+
+    /**
+     * Deletes an [Account] based on the [login] given by the
+     * [AccountController]
+     *
+     * @param login the [Account.login] value
+     * @return a Boolean with whether the account was deleted
+     */
+    fun deleteAccountByLogin(login: String): Boolean =
+        accountRepository.deleteAccountByLogin(login)
 }
