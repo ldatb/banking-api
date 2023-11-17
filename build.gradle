@@ -6,6 +6,7 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.8.22'
     id 'org.jetbrains.kotlin.plugin.spring' version '1.8.22'
     id 'org.jetbrains.kotlin.plugin.jpa' version '1.8.22'
+    id 'org.jlleitschuh.gradle.ktlint' version '11.6.1'
 }
 
 group = 'com.ldatb.learn'
@@ -30,6 +31,19 @@ dependencies {
     runtimeOnly 'com.mysql:mysql-connector-j'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.boot:spring-security-test'
+}
+
+ktlint {
+    debug = true
+    verbose = true
+    reporters {
+        reporter "checkstyle"
+        reporter "plain"
+    }
+}
+
+allprojects {
+    apply plugin: "org.jlleitschuh.gradle.ktlint"
 }
 
 tasks.withType(KotlinCompile) {

@@ -8,4 +8,3 @@ open class ApiException(
     var details: String? = "No details available",
     val exception: String? = Exception::class.simpleName
 )
-

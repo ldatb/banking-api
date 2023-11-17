@@ -3,7 +3,7 @@ package com.ldatb.learn.banking.dto.response
 @JvmRecord
 data class AccountResponseDTO(
     val error: Boolean = false,
-    val data: AccountResponseDetailsDTO,
+    val data: AccountResponseDetailsDTO
 )
 
 data class AccountResponseDetailsDTO(

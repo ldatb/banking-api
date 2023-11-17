@@ -3,7 +3,7 @@ package com.ldatb.learn.banking.model
 import com.ldatb.learn.banking.dto.response.AccountResponseDTO
 import com.ldatb.learn.banking.dto.response.AccountResponseDetailsDTO
 import com.ldatb.learn.banking.util.generateRandomSecretToken
-import jakarta.persistence.*
+import jakarta.persistence.* // ktlint-disable no-wildcard-imports
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
@@ -14,7 +14,8 @@ import java.util.UUID
 @Entity
 @Table(name = "accounts")
 data class Account(
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     val id: Long = 0L,
 
@@ -49,7 +50,7 @@ data class Account(
     val updatedAt: Timestamp = Timestamp.from(Instant.now()),
 
     @Column(name = "created_at")
-    val createdAt: Timestamp = Timestamp.from(Instant.now()),
+    val createdAt: Timestamp = Timestamp.from(Instant.now())
 ) : UserDetails {
     fun toAccountResponseDTO(): AccountResponseDTO =
         AccountResponseDTO(
@@ -63,7 +64,6 @@ data class Account(
                 defaultCurrency = this.defaultCurrency
             )
         )
-
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
         if (this.role == AccountRoles.ADMIN) {

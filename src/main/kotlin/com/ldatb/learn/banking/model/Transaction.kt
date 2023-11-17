@@ -1,13 +1,14 @@
 package com.ldatb.learn.banking.model
 
-import jakarta.persistence.*
+import jakarta.persistence.* // ktlint-disable no-wildcard-imports
 import java.sql.Timestamp
 import java.time.Instant
 
 @Entity
 @Table(name = "transactions")
 data class Transaction(
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     var id: Long,
 
@@ -24,5 +25,5 @@ data class Transaction(
     var recipientTransferKey: String,
 
     @Column(name = "timestamp")
-    var timestamp: Timestamp = Timestamp.from(Instant.now()),
+    var timestamp: Timestamp = Timestamp.from(Instant.now())
 )

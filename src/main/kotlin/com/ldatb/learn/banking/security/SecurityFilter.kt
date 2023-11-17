@@ -30,18 +30,24 @@ class SecurityFilter(
                 response.setHeader("Content-Type", "application/json")
                 response.characterEncoding = "UTF-8"
                 response.status = HttpServletResponse.SC_UNAUTHORIZED
-                response.writer.print(Gson().toJson(InvalidTokenException(
-                    message = "Invalid token",
-                    details = exception.message,
-                    exception = exception::class.simpleName
-                )))
+                response.writer.print(
+                    Gson().toJson(
+                        InvalidTokenException(
+                            message = "Invalid token",
+                            details = exception.message,
+                            exception = exception::class.simpleName
+                        )
+                    )
+                )
                 response.writer.flush()
                 return
             }
 
             val account = accountService.getAccountByLogin(login)!!
             val authentication = UsernamePasswordAuthenticationToken(
-                account, null, account.authorities
+                account,
+                null,
+                account.authorities
             )
             SecurityContextHolder.getContext().authentication = authentication
         }
