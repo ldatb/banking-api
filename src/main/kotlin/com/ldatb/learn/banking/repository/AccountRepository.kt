@@ -7,4 +7,5 @@ import org.springframework.security.core.userdetails.UserDetails
 interface AccountRepository : JpaRepository<Account, Long> {
     fun findByLogin(login: String): UserDetails
     fun findAccountByLogin(login: String): Account?
+    fun findAccountByTransferKey(transferKey: String): Account?
 }

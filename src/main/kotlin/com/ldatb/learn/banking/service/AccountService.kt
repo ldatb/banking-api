@@ -9,6 +9,7 @@ import com.ldatb.learn.banking.util.RequestUtils
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
+import java.util.UUID
 
 @Service
 class AccountService(
@@ -23,6 +24,11 @@ class AccountService(
             firstName = data.firstName,
             lastName = data.lastName
         )
+
+        while (accountRepository.findAccountByTransferKey(newAccount.transferKey) != null) {
+            newAccount.transferKey = UUID.randomUUID().toString()
+        }
+
         accountRepository.save(newAccount)
         return newAccount
     }

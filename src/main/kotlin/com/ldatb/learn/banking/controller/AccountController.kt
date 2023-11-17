@@ -30,6 +30,7 @@ class AccountController(
                 )
             )
         }
+
         val newAccount = accountService.createAccount(data)
         return ResponseEntity.status(HttpStatus.CREATED).body(newAccount.toAccountResponseDTO())
     }

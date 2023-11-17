@@ -9,6 +9,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import java.sql.Timestamp
 import java.time.Instant
+import java.util.UUID
 
 @Entity
 @Table(name = "accounts")
@@ -24,8 +25,7 @@ data class Account(
     val hashedPassword: String,
 
     @Column(name = "transfer_key", length = 36, nullable = false)
-    @GeneratedValue(strategy = GenerationType.UUID)
-    val transferKey: String = "",
+    var transferKey: String = UUID.randomUUID().toString(),
 
     @Column(name = "secret_token", nullable = false)
     val secretToken: UInt = generateRandomSecretToken(),
