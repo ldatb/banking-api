@@ -1,6 +1,7 @@
 package com.ldatb.learn.banking.security
 
-import com.ldatb.learn.banking.repository.AccountRepository
+import com.google.gson.Gson
+import com.ldatb.learn.banking.exception.InvalidTokenException
 import com.ldatb.learn.banking.service.AccountService
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
@@ -22,7 +23,22 @@ class SecurityFilter(
     ) {
         val token = this.recoverToken(request)
         if (token != null) {
-            val login = tokenService.validateToken(token)
+            var login = ""
+            try {
+                login = tokenService.validateToken(token)
+            } catch (exception: Exception) {
+                response.setHeader("Content-Type", "application/json")
+                response.characterEncoding = "UTF-8"
+                response.status = HttpServletResponse.SC_UNAUTHORIZED
+                response.writer.print(Gson().toJson(InvalidTokenException(
+                    message = "Invalid token",
+                    details = exception.message,
+                    exception = exception::class.simpleName
+                )))
+                response.writer.flush()
+                return
+            }
+
             val account = accountService.getAccountByLogin(login)!!
             val authentication = UsernamePasswordAuthenticationToken(
                 account, null, account.authorities

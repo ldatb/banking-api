@@ -2,12 +2,10 @@ package com.ldatb.learn.banking.security
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
-import com.auth0.jwt.exceptions.JWTCreationException
-import com.auth0.jwt.exceptions.JWTVerificationException
+import com.auth0.jwt.interfaces.Clock
 import com.ldatb.learn.banking.config.AppConfig
 import com.ldatb.learn.banking.model.Account
 import org.springframework.stereotype.Service
-import java.lang.RuntimeException
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.util.*
@@ -19,31 +17,21 @@ class TokenService(
     private val secretKey = Algorithm.HMAC256(appConfig.appConfiguration().jwtToken)
     private val tokenIssuer = "ldatb.com"
 
-    fun generateToken(account: Account): String {
-        try {
-            return JWT.create()
-                .withIssuer(tokenIssuer)
-                .withSubject(account.login)
-                .withExpiresAt(generateExpirationDate())
-                .sign(secretKey)
-        } catch (exception: JWTCreationException) {
-            throw RuntimeException("Error while generating JWT token", exception)
-        }
-    }
+    fun generateToken(account: Account): String =
+        JWT.create()
+            .withIssuer(tokenIssuer)
+            .withSubject(account.login)
+            .withExpiresAt(generateExpirationDate())
+            .sign(secretKey)
 
-    fun validateToken(token: String): String {
-        return try {
-            JWT.require(secretKey)
-                .withIssuer(tokenIssuer)
-                .build()
-                .verify(token)
-                .subject
-        } catch (exception: JWTVerificationException) {
-            ""
-        }
-    }
+    fun validateToken(token: String): String =
+        JWT.require(secretKey)
+            .withIssuer(tokenIssuer)
+            .build()
+            .verify(token)
+            .subject
 
     // Private functions
     private fun generateExpirationDate(): Date =
-        Date.from(LocalDateTime.now().plusHours(1).toInstant(ZoneOffset.UTC))
+        Date.from(LocalDateTime.now().plusHours(1).toInstant(ZoneOffset.MIN))
 }
