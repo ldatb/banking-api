@@ -2,6 +2,7 @@ package com.ldatb.learn.banking.controller
 
 import com.ldatb.learn.banking.dto.request.CreateAccountRequestDTO
 import com.ldatb.learn.banking.dto.response.AccountResponseDTO
+import com.ldatb.learn.banking.dto.response.NotSelfAccountResponseDTO
 import com.ldatb.learn.banking.exception.AccountAlreadyExistsException
 import com.ldatb.learn.banking.exception.AccountNotFoundException
 import com.ldatb.learn.banking.model.Account
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 /**
@@ -53,25 +55,39 @@ class AccountController(
 
     /**
      * Gets an user based on the request. If no query was given, returns a [AccountResponseDTO] instance,
-     * but, if a query with an [Account.transferKey] is given, returns a [-- UPDATE THIS --] instance
+     * but, if a query with an [Account.transferKey] is given, returns a [NotSelfAccountResponseDTO] instance
      * This is an authenticated route.
      *
      * @param request is an instance of [HttpServletRequest]
-     * @return a [ResponseEntity] with either [AccountResponseDTO] data or [-- UPDATE THIS --]
+     * @return a [ResponseEntity] with either [AccountResponseDTO] data or [NotSelfAccountResponseDTO]
      */
     @GetMapping()
-    fun getAccount(request: HttpServletRequest): ResponseEntity<Any> {
+    fun getAccount(
+        request: HttpServletRequest,
+        @RequestParam(name = "key")
+        transferKey: String?
+    ): ResponseEntity<Any> {
+        // Information was requested for another account
+        if (transferKey != null) {
+            val anotherAccount = accountService.getAccountFromTransferKey(transferKey)
+                ?: return ResponseEntity.badRequest().body(
+                    AccountNotFoundException(
+                        message = "Account with transfer key $transferKey not found",
+                        details = "Transfer key $transferKey doesn't belong to any account"
+                    )
+                )
+            return ResponseEntity.ok(anotherAccount.toNotSelfAccountResponseDTO())
+        }
+
         // Information was requested for self account
-        val account = accountService.getAccountFromRequest(request)
-        if (account == null) {
-            val login = accountService.getAccountLoginFromRequest(request)
-            return ResponseEntity.badRequest().body(
+        val selfAccount = accountService.getAccountFromRequest(request)
+            ?: return ResponseEntity.badRequest().body(
                 AccountNotFoundException(
-                    message = "Account with login $login not found",
-                    details = "Bearer token corresponds to an unknown account of login $login"
+                    message = "Account not found",
+                    details = "Bearer token corresponds to an unknown account"
                 )
             )
-        }
-        return ResponseEntity.ok(account.toAccountResponseDTO())
+
+        return ResponseEntity.ok(selfAccount.toAccountResponseDTO())
     }
 }

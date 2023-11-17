@@ -2,6 +2,8 @@ package com.ldatb.learn.banking.model
 
 import com.ldatb.learn.banking.dto.response.AccountResponseDTO
 import com.ldatb.learn.banking.dto.response.AccountResponseDetailsDTO
+import com.ldatb.learn.banking.dto.response.NotSelfAccountResponseDTO
+import com.ldatb.learn.banking.dto.response.NotSelfAccountResponseDetailsDTO
 import com.ldatb.learn.banking.util.generateRandomSecretToken
 import jakarta.persistence.* // ktlint-disable no-wildcard-imports
 import org.springframework.security.core.GrantedAuthority
@@ -69,6 +71,8 @@ data class Account(
     @Column(name = "created_at")
     val createdAt: Timestamp = Timestamp.from(Instant.now())
 ) : UserDetails {
+    // CASTS
+
     /**
      * Casts the information of the Account class to an AccountResponseDTO class, which
      * is the response that the API gives when asked about information on the account of the user
@@ -85,6 +89,21 @@ data class Account(
                 lastName = this.lastName,
                 balance = this.balance,
                 defaultCurrency = this.defaultCurrency
+            )
+        )
+
+    /**
+     * Casts the information of the Account class to an NotSelfAccountResponseDTO class, which
+     * is the response that the API gives when asked about information on the account of another user
+     * @see [NotSelfAccountResponseDTO] for more information
+     * @return [NotSelfAccountResponseDTO]
+     */
+    fun toNotSelfAccountResponseDTO(): NotSelfAccountResponseDTO =
+        NotSelfAccountResponseDTO(
+            data = NotSelfAccountResponseDetailsDTO(
+                transferKey = this.transferKey,
+                firstName = this.firstName,
+                lastName = this.lastName,
             )
         )
 

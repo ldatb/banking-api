@@ -78,6 +78,16 @@ class AccountService(
     fun getAccountFromRequest(request: HttpServletRequest): Account? =
         accountRepository.findAccountByLogin(getAccountLoginFromRequest(request))
 
+    /**
+     * Fetches an [Account] based on the [transferKey] given by the
+     * [com.ldatb.learn.banking.controller.AccountController]
+     *
+     * @param transferKey the [Account.transferKey] value
+     * @return an optional [Account] entity
+     */
+    fun getAccountFromTransferKey(transferKey: String): Account? =
+        accountRepository.findAccountByTransferKey(transferKey)
+
     // UPDATE
     // DELETE
 }
