@@ -23,7 +23,7 @@ class SecurityFilter(
     ) {
         val token = this.recoverToken(request)
         if (token != null) {
-            var login = ""
+            val login: String
             try {
                 login = tokenService.validateToken(token)
             } catch (exception: Exception) {

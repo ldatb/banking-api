@@ -1,6 +1,7 @@
 package com.ldatb.learn.banking.model
 
-enum class AccountRoles(role: String) {
+@Suppress("UNUSED_PARAMETER")
+enum class AccountRoles(s: String) {
     USER("USER"),
     ADMIN("ADMIN")
 }
