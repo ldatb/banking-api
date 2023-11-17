@@ -1,6 +1,7 @@
 package com.ldatb.learn.banking.security
 
 import com.ldatb.learn.banking.repository.AccountRepository
+import com.ldatb.learn.banking.service.AccountService
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -12,7 +13,7 @@ import org.springframework.web.filter.OncePerRequestFilter
 @Component
 class SecurityFilter(
     private val tokenService: TokenService,
-    private val accountRepository: AccountRepository
+    private val accountService: AccountService
 ) : OncePerRequestFilter() {
     override fun doFilterInternal(
         request: HttpServletRequest,
@@ -22,7 +23,7 @@ class SecurityFilter(
         val token = this.recoverToken(request)
         if (token != null) {
             val login = tokenService.validateToken(token)
-            val account = accountRepository.findByLogin(login)
+            val account = accountService.getAccountByLogin(login)!!
             val authentication = UsernamePasswordAuthenticationToken(
                 account, null, account.authorities
             )

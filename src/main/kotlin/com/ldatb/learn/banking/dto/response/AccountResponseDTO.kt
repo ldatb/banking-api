@@ -1,12 +1,12 @@
 package com.ldatb.learn.banking.dto.response
 
 @JvmRecord
-data class CreateAccountResponseDTO(
+data class AccountResponseDTO(
     val error: Boolean = false,
-    val data: CreateAccountDetailsDTO,
+    val data: AccountResponseDetailsDTO,
 )
 
-data class CreateAccountDetailsDTO(
+data class AccountResponseDetailsDTO(
     val login: String,
     val transferKey: String,
     val secretToken: UInt,
