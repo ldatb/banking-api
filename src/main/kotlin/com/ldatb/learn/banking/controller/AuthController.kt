@@ -60,7 +60,9 @@ class AuthController(
         // try-catch and return either the token, or the error
         return try {
             val token = tokenService.generateToken(auth.principal as Account)
-            ResponseEntity.ok(LoginResponseDTO(data = LoginResponseDataDTO(token)))
+            ResponseEntity.status(HttpStatus.CREATED).body(
+                LoginResponseDTO(data = LoginResponseDataDTO(token))
+            )
         } catch (exception: JWTCreationException) {
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
                 ApiException(
