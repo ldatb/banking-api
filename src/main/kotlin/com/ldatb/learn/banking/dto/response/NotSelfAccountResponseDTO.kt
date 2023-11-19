@@ -27,5 +27,5 @@ data class NotSelfAccountResponseDTO(
 data class NotSelfAccountResponseDetailsDTO(
     val transferKey: String,
     val firstName: String,
-    val lastName: String,
+    val lastName: String
 )

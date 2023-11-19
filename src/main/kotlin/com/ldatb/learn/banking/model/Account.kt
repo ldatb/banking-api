@@ -103,7 +103,7 @@ data class Account(
             data = NotSelfAccountResponseDetailsDTO(
                 transferKey = this.transferKey,
                 firstName = this.firstName,
-                lastName = this.lastName,
+                lastName = this.lastName
             )
         )
 

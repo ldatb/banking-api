@@ -51,9 +51,9 @@ interface AccountRepository : JpaRepository<Account, Long> {
      */
     fun findAccountByTransferKey(transferKey: String): Account?
 
-    //UPDATE
+    // UPDATE
 
-    //DELETE
+    // DELETE
 
     /**
      * Delete an [Account] based on its [Account.login]

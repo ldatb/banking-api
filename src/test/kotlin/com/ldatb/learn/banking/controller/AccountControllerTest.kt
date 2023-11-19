@@ -15,12 +15,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
 import org.springframework.http.MediaType
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*  // ktlint-disable no-wildcard-imports
-
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.* // ktlint-disable no-wildcard-imports
 
 /**
  * Provide tests for the [AccountController]
@@ -36,6 +34,7 @@ class AccountControllerTest {
     class AccountControllerConfig {
         @Bean
         fun accountService() = mockk<AccountService>()
+
         @Bean
         fun tokenService() = mockk<TokenService>()
     }
@@ -56,7 +55,7 @@ class AccountControllerTest {
         login = "mock-login",
         hashedPassword = "mock-password",
         firstName = "Mock",
-        lastName = "Account",
+        lastName = "Account"
     )
 
     private val createAccountMock = CreateAccountRequestDTO(
@@ -86,16 +85,16 @@ class AccountControllerTest {
 
         // when
         mockMvc.perform(
-                post("/account")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(jacksonObjectMapper().writeValueAsBytes(createAccountMock))
-            )
+            post("/account")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jacksonObjectMapper().writeValueAsBytes(createAccountMock))
+        )
             .andExpect(status().isCreated)
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.error").value(false))
             .andExpect(jsonPath("$.data.login").value(mockkAccount.login))
 
-        //then
+        // then
         verify { accountService.createAccount(createAccountMock) }
     }
 
@@ -136,7 +135,7 @@ class AccountControllerTest {
             login = "mock-login-another",
             hashedPassword = "mock-password",
             firstName = "Other",
-            lastName = "Mock",
+            lastName = "Mock"
         )
         every { accountService.getAccountFromTransferKey(mockkAccountOther.transferKey) } returns mockkAccountOther
 

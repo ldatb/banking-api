@@ -23,7 +23,7 @@ class AuthServiceTest {
         login = "mock-login",
         hashedPassword = "mock-password",
         firstName = "Mock",
-        lastName = "Account",
+        lastName = "Account"
     )
 
     /**

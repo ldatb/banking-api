@@ -48,7 +48,7 @@ class SecurityFilter(
             response.writer.print(
                 Gson().toJson(
                     InvalidTokenException(
-                        message = "Missing required token in request",
+                        message = "Missing required token in request"
                     )
                 )
             )
