@@ -7,6 +7,8 @@ import com.ldatb.learn.banking.exception.AccountAlreadyExistsException
 import com.ldatb.learn.banking.exception.AccountNotFoundException
 import com.ldatb.learn.banking.model.Account
 import com.ldatb.learn.banking.service.AccountService
+import com.ldatb.learn.banking.security.TokenService
+import com.ldatb.learn.banking.util.getTokenFromRequest
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -26,7 +28,8 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("account")
 class AccountController(
-    private val accountService: AccountService
+    private val accountService: AccountService,
+    private val tokenService: TokenService
 ) {
     /**
      * Registers a new Account in the database.
@@ -80,7 +83,8 @@ class AccountController(
         }
 
         // Information was requested for self account
-        val selfAccount = accountService.getAccountFromRequest(request)
+        val login = tokenService.validateToken(getTokenFromRequest(request))
+        val selfAccount = accountService.getAccountByLogin(login)
             ?: return ResponseEntity.badRequest().body(
                 AccountNotFoundException(
                     message = "Account not found",
