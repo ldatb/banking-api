@@ -29,8 +29,9 @@ dependencies {
     implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
     implementation 'org.jetbrains.kotlin:kotlin-reflect'
     runtimeOnly 'com.mysql:mysql-connector-j'
+    testImplementation 'io.mockk:mockk:1.10.4'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.boot:spring-security-test'
+    testImplementation 'org.springframework.security:spring-security-test'
 }
 
 ktlint {
@@ -46,14 +47,7 @@ allprojects {
     apply plugin: "org.jlleitschuh.gradle.ktlint"
 }
 
-task installGitHook(type: Copy) {
-    from new File(rootProject.rootDir, "pre-commit")
-    into { new File(rootProject.rootDir, ".git/hooks") }
-    fileMode 0777
-}
-
 tasks.withType(KotlinCompile) {
-    dependsOn tasks.getByPath(":installGitHook")
     kotlinOptions {
         freeCompilerArgs += '-Xjsr305=strict'
         jvmTarget = '17'
