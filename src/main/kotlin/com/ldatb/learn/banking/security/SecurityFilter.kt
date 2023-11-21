@@ -38,22 +38,8 @@ class SecurityFilter(
     ) {
         val token = this.recoverToken(request)
         if (token == null) {
-            // Token is null
-            response.setHeader(
-                "Content-Type",
-                "application/json"
-            )
-            response.characterEncoding = "UTF-8"
-            response.status = HttpServletResponse.SC_UNAUTHORIZED
-            response.writer.print(
-                Gson().toJson(
-                    InvalidTokenException(
-                        message = "Missing required token in request"
-                    )
-                )
-            )
-            response.writer.flush()
-            return // Return here as we don't want anything else to be done
+            filterChain.doFilter(request, response)
+            return
         }
 
         // Try to validate the token, this means checking if the secret key, issuer,
@@ -64,10 +50,7 @@ class SecurityFilter(
             login = tokenService.validateToken(token)
         } catch (exception: Exception) {
             // For some reason, the token is not valid, so return the error
-            response.setHeader(
-                "Content-Type",
-                "application/json"
-            )
+            response.setHeader("Content-Type", "application/json")
             response.characterEncoding = "UTF-8"
             response.status = HttpServletResponse.SC_UNAUTHORIZED
             response.writer.print(
