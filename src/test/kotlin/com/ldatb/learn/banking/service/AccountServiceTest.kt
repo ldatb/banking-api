@@ -37,7 +37,6 @@ class AccountServiceTest {
         // values that would cause this test to always fail
         every { accountRepository.findAccountByTransferKey(any()) } returns null
         every { accountRepository.save(any()) } returns mockkAccount
-        every { accountRepository.createAccount(any()) } returns mockkAccount
 
         // when
         val createAccountMock = CreateAccountRequestDTO(

@@ -9,18 +9,6 @@ import org.springframework.security.core.userdetails.UserDetails
  * Extends a [JpaRepository] interface
  */
 interface AccountRepository : JpaRepository<Account, Long> {
-    // CREATE
-
-    /**
-     * Inserts an [Account] in the database
-     *
-     * @param account the [Account] entity
-     *
-     * @return an [Account] entity
-     */
-    fun createAccount(account: Account): Account =
-        this.save(account)
-
     // READ
 
     /**

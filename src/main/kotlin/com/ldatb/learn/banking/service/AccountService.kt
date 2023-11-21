@@ -40,7 +40,7 @@ class AccountService(
         }
 
         // Save the new [Account] into the database
-        newAccount = accountRepository.createAccount(account = newAccount)
+        newAccount = accountRepository.save(newAccount)
         return newAccount
     }
 
