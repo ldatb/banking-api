@@ -10,6 +10,7 @@ import com.ldatb.learn.banking.security.TokenService
 import com.ldatb.learn.banking.service.AccountService
 import com.ldatb.learn.banking.util.getTokenFromRequest
 import jakarta.servlet.http.HttpServletRequest
+import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.transaction.annotation.Transactional
@@ -40,7 +41,7 @@ class AccountController(
      */
     @PostMapping()
     @Transactional
-    fun registerAccount(@RequestBody data: CreateAccountRequestDTO): ResponseEntity<Any> {
+    fun registerAccount(@Valid @RequestBody data: CreateAccountRequestDTO): ResponseEntity<Any> {
         // Verify that no account with the given login already exists
         if (accountService.getAccountByLogin(data.login) != null) {
             return ResponseEntity.badRequest().body(
