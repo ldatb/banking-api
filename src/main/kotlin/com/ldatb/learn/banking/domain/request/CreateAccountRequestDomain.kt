@@ -1,4 +1,4 @@
-package com.ldatb.learn.banking.dto.request
+package com.ldatb.learn.banking.domain.request
 
 import com.ldatb.learn.banking.model.Account
 import jakarta.validation.constraints.NotBlank
@@ -14,7 +14,7 @@ import jakarta.validation.constraints.Size
  * @param lastName is the [Account.lastName] value
  */
 @JvmRecord
-data class CreateAccountRequestDTO(
+data class CreateAccountRequestDomain(
     @NotBlank(message = "The login is required")
     @Size(min = 2, max = 64, message = "The length of the login must be between 2 and 100 characters.")
     val login: String,

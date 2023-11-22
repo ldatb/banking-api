@@ -1,4 +1,4 @@
-package com.ldatb.learn.banking.dto.response
+package com.ldatb.learn.banking.domain.response
 
 /**
  * A record of the response data regarding information about an Account's authentication

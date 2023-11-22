@@ -1,4 +1,4 @@
-package com.ldatb.learn.banking.dto.response
+package com.ldatb.learn.banking.domain.response
 
 import com.ldatb.learn.banking.model.Account
 

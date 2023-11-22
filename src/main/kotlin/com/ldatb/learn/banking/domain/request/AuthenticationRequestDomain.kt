@@ -1,4 +1,4 @@
-package com.ldatb.learn.banking.dto.request
+package com.ldatb.learn.banking.domain.request
 
 import com.ldatb.learn.banking.model.Account
 import jakarta.validation.constraints.NotBlank
@@ -11,7 +11,7 @@ import jakarta.validation.constraints.NotBlank
  * @param password is the [Account.hashedPassword] value
  */
 @JvmRecord
-data class AuthenticationRequestDTO(
+data class AuthenticationRequestDomain(
     @NotBlank(message = "The login is required")
     val login: String,
 

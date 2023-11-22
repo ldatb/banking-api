@@ -1,9 +1,9 @@
 package com.ldatb.learn.banking.model
 
-import com.ldatb.learn.banking.dto.response.AccountResponseDTO
-import com.ldatb.learn.banking.dto.response.AccountResponseDetailsDTO
-import com.ldatb.learn.banking.dto.response.NotSelfAccountResponseDTO
-import com.ldatb.learn.banking.dto.response.NotSelfAccountResponseDetailsDTO
+import com.ldatb.learn.banking.domain.response.AccountResponseDTO
+import com.ldatb.learn.banking.domain.response.AccountResponseDetailsDTO
+import com.ldatb.learn.banking.domain.response.NotSelfAccountResponseDTO
+import com.ldatb.learn.banking.domain.response.NotSelfAccountResponseDetailsDTO
 import com.ldatb.learn.banking.util.generateRandomSecretToken
 import jakarta.persistence.* // ktlint-disable no-wildcard-imports
 import org.springframework.security.core.GrantedAuthority
@@ -35,38 +35,38 @@ import java.util.UUID
 data class Account(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "id", unique = true)
     val id: Long = 0L,
 
-    @Column(name = "login")
-    val login: String,
+    @Column(name = "login", unique = true)
+    var login: String,
 
     @Column(name = "hashed_password", nullable = false)
-    val hashedPassword: String,
+    var hashedPassword: String,
 
-    @Column(name = "transfer_key", length = 36, nullable = false)
+    @Column(name = "transfer_key", length = 36, nullable = false, unique = true)
     var transferKey: String = UUID.randomUUID().toString(),
 
     @Column(name = "secret_token", nullable = false)
-    val secretToken: UInt = generateRandomSecretToken(),
+    var secretToken: UInt = generateRandomSecretToken(),
 
     @Column(name = "first_name", nullable = false)
-    val firstName: String,
+    var firstName: String,
 
     @Column(name = "last_name", nullable = false)
-    val lastName: String,
+    var lastName: String,
 
     @Column(name = "balance", nullable = false)
-    val balance: Long = 0L,
+    var balance: Long = 0L,
 
     @Column(name = "default_currency")
-    val defaultCurrency: String = "usd",
+    var defaultCurrency: String = "usd",
 
     @Column(name = "role")
     val role: AccountRoles = AccountRoles.USER,
 
     @Column(name = "updated_at")
-    val updatedAt: Timestamp = Timestamp.from(Instant.now()),
+    var updatedAt: Timestamp = Timestamp.from(Instant.now()),
 
     @Column(name = "created_at")
     val createdAt: Timestamp = Timestamp.from(Instant.now())
