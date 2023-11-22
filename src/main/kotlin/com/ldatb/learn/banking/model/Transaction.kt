@@ -20,7 +20,7 @@ import java.time.Instant
 data class Transaction(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "id", unique = true)
     var id: Long,
 
     @Column(name = "amount", nullable = false)
