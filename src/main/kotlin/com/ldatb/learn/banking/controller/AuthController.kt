@@ -1,9 +1,9 @@
 package com.ldatb.learn.banking.controller
 
 import com.auth0.jwt.exceptions.JWTCreationException
-import com.ldatb.learn.banking.dto.request.AuthenticationRequestDTO
-import com.ldatb.learn.banking.dto.response.LoginResponseDTO
-import com.ldatb.learn.banking.dto.response.LoginResponseDataDTO
+import com.ldatb.learn.banking.domain.request.AuthenticationRequestDomain
+import com.ldatb.learn.banking.domain.response.LoginResponseDTO
+import com.ldatb.learn.banking.domain.response.LoginResponseDataDTO
 import com.ldatb.learn.banking.exception.AccountNotFoundException
 import com.ldatb.learn.banking.exception.ApiException
 import com.ldatb.learn.banking.model.Account
@@ -36,12 +36,12 @@ class AuthController(
      * Login to account. Creates a JWT that can be used to authenticate the user into
      * other endpoints
      *
-     * @param data is the information required to create the token. Is an instance of [AuthenticationRequestDTO]
+     * @param data is the information required to create the token. Is an instance of [AuthenticationRequestDomain]
      * @return a [ResponseEntity]
-     * @see [AuthenticationRequestDTO]
+     * @see [AuthenticationRequestDomain]
      */
     @PostMapping()
-    fun loginToAccount(@RequestBody data: AuthenticationRequestDTO): ResponseEntity<Any> {
+    fun loginToAccount(@RequestBody data: AuthenticationRequestDomain): ResponseEntity<Any> {
         // No Account was found with this login, return AccountNotFoundException
         if (accountService.getAccountByLogin(data.login) == null) {
             return ResponseEntity.badRequest().body(
