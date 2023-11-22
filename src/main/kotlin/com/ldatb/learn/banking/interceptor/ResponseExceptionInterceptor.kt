@@ -1,5 +1,6 @@
-package com.ldatb.learn.banking.exception
+package com.ldatb.learn.banking.interceptor
 
+import com.ldatb.learn.banking.exception.ApiException
 import org.springframework.context.support.DefaultMessageSourceResolvable
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.context.request.WebRequest
+import org.springframework.web.servlet.NoHandlerFoundException
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 import java.util.stream.Collectors
 
@@ -21,7 +23,7 @@ import java.util.stream.Collectors
  */
 @ControllerAdvice
 @RestController
-class ResponseExceptionHandler : ResponseEntityExceptionHandler() {
+class ResponseExceptionInterceptor : ResponseEntityExceptionHandler() {
     /**
      * A generic exception handler. This is here so the server always return
      * something when it encounters an error

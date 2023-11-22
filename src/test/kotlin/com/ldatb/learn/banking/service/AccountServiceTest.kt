@@ -1,6 +1,7 @@
 package com.ldatb.learn.banking.service
 
-import com.ldatb.learn.banking.dto.request.CreateAccountRequestDTO
+import com.ldatb.learn.banking.domain.request.CreateAccountRequestDomain
+import com.ldatb.learn.banking.domain.request.UpdateAccountRequestDomain
 import com.ldatb.learn.banking.model.Account
 import com.ldatb.learn.banking.repository.AccountRepository
 import io.mockk.every
@@ -19,7 +20,7 @@ class AccountServiceTest {
      */
     private val accountRepository: AccountRepository = mockk<AccountRepository>()
     private val accountService: AccountService = AccountService(accountRepository)
-    private val mockkAccount: Account = Account(
+    private var mockkAccount: Account = Account(
         login = "mock-login",
         hashedPassword = "mock-password",
         firstName = "Mock",
@@ -28,7 +29,7 @@ class AccountServiceTest {
 
     /**
      * Verify that the [AccountService.createAccount]
-     * is able to create an [Account] based on a [CreateAccountRequestDTO]
+     * is able to create an [Account] based on a [CreateAccountRequestDomain]
      */
     @Test
     fun testCreateAccount() {
@@ -39,7 +40,7 @@ class AccountServiceTest {
         every { accountRepository.save(any()) } returns mockkAccount
 
         // when
-        val createAccountMock = CreateAccountRequestDTO(
+        val createAccountMock = CreateAccountRequestDomain(
             login = mockkAccount.login,
             password = mockkAccount.hashedPassword,
             firstName = mockkAccount.firstName,
@@ -81,6 +82,52 @@ class AccountServiceTest {
 
         // then
         assertEquals(mockkAccount, result)
+    }
+
+    /**
+     * Verify that the [AccountService.updateAccountFromLogin]
+     * is able to update an [Account] based on a [UpdateAccountRequestDomain]
+     */
+    @Test
+    fun testUpdateAccountFromLogin() {
+        // given
+        every { accountRepository.findAccountByTransferKey(any()) } returns null
+        every { accountRepository.save(any()) } returns mockkAccount
+        every { accountRepository.findAccountByLogin(any()) } returns mockkAccount
+
+        // when
+        // Create the account
+        val createAccountMock = CreateAccountRequestDomain(
+            login = mockkAccount.login,
+            password = mockkAccount.hashedPassword,
+            firstName = mockkAccount.firstName,
+            lastName = mockkAccount.lastName
+        )
+        val createResult = accountService.createAccount(createAccountMock)
+
+        // Update the Mockk account
+        mockkAccount.login = "update-login"
+        mockkAccount.transferKey = "update-tfk"
+        mockkAccount.hashedPassword = "update-password"
+        mockkAccount.secretToken = 123000U
+        mockkAccount.firstName = "update fn"
+        mockkAccount.lastName = "update ln"
+
+        // Use the new values of the Mockk account to create the request
+        val updateAccountMockk = UpdateAccountRequestDomain(
+            login = mockkAccount.login,
+            transferKey = mockkAccount.transferKey,
+            password = mockkAccount.hashedPassword,
+            secretToken = mockkAccount.secretToken,
+            firstName = mockkAccount.firstName,
+            lastName = mockkAccount.lastName
+        )
+
+        // Call the service to update the instance
+        val updateResult = accountService.updateAccountFromLogin(createResult.login, updateAccountMockk)
+
+        // then
+        assertEquals(mockkAccount, updateResult)
     }
 
     /**

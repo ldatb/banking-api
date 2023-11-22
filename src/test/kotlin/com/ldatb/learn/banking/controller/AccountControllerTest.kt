@@ -1,7 +1,9 @@
 package com.ldatb.learn.banking.controller
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.ldatb.learn.banking.dto.request.CreateAccountRequestDTO
+import com.ldatb.learn.banking.domain.request.CreateAccountRequestDomain
+import com.ldatb.learn.banking.domain.request.UpdateAccountRequestDomain
+import com.ldatb.learn.banking.interceptor.AuthInterceptor
 import com.ldatb.learn.banking.model.Account
 import com.ldatb.learn.banking.security.TokenService
 import com.ldatb.learn.banking.service.AccountService
@@ -10,14 +12,17 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
 import org.springframework.http.MediaType
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.* // ktlint-disable no-wildcard-imports
 
 /**
@@ -25,6 +30,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.* // kt
  * @see [AccountController]
  */
 @AutoConfigureMockMvc(addFilters = false)
+@EnableAutoConfiguration(exclude = [AuthInterceptor::class])
 @WebMvcTest(AccountController::class)
 class AccountControllerTest {
     /**
@@ -58,7 +64,7 @@ class AccountControllerTest {
         lastName = "Account"
     )
 
-    private val createAccountMock = CreateAccountRequestDTO(
+    private val createAccountMock = CreateAccountRequestDomain(
         login = mockkAccount.login,
         password = mockkAccount.hashedPassword,
         firstName = mockkAccount.firstName,
@@ -75,7 +81,7 @@ class AccountControllerTest {
     /**
      * Verify that the [AccountController.registerAccount]
      * is able to create an [Account] when provided with
-     * the [CreateAccountRequestDTO]
+     * the [CreateAccountRequestDomain]
      */
     @Test
     fun testRegisterAccount() {
@@ -85,7 +91,7 @@ class AccountControllerTest {
 
         // when
         mockMvc.perform(
-            post("/account")
+            post("/account/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jacksonObjectMapper().writeValueAsBytes(createAccountMock))
         )
@@ -106,6 +112,7 @@ class AccountControllerTest {
     @Test
     fun testGetAccountSelf() {
         // given
+        //accountService.getAccountByLogin(login)
         every { tokenService.validateToken(any()) } returns mockkAccount.login
         every { accountService.getAccountByLogin(mockkAccount.login) } returns mockkAccount
 
@@ -137,6 +144,7 @@ class AccountControllerTest {
             firstName = "Other",
             lastName = "Mock"
         )
+        every { accountService.getAccountByLogin(mockkAccount.login) } returns mockkAccount
         every { accountService.getAccountFromTransferKey(mockkAccountOther.transferKey) } returns mockkAccountOther
 
         // when
@@ -152,5 +160,41 @@ class AccountControllerTest {
 
         // then
         verify { accountService.getAccountFromTransferKey(mockkAccountOther.transferKey) }
+    }
+
+    /**
+     * Verify that the [AccountController.updateAccount]
+     * is able to update an [Account] when provided with a
+     * [UpdateAccountRequestDomain]
+     */
+    @Test
+    fun testUpdateAccount() {
+        // given
+        val updateAccountMockk = UpdateAccountRequestDomain(
+            login = "update-login",
+            transferKey = "update-tfk",
+            password = "update-password",
+            secretToken = 123000U,
+            firstName = "update fn",
+            lastName = "update ln"
+        )
+        every { tokenService.validateToken(any()) } returns mockkAccount.login
+        every { accountService.getAccountByLogin(mockkAccount.login) } returns mockkAccount
+        every { accountService.getAccountByLogin(updateAccountMockk.login!!) } returns null
+        every { accountService.getAccountFromTransferKey(updateAccountMockk.transferKey!!) } returns null
+        every { accountService.createAccount(createAccountMock) } returns mockkAccount
+        every { accountService.updateAccountFromLogin(createAccountMock.login, any()) } returns mockkAccount
+
+        // when
+        mockMvc.perform(
+            put("/account")
+                .header("Authorization", "any-token")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jacksonObjectMapper().writeValueAsBytes(updateAccountMockk))
+        )
+            .andExpect(status().isNoContent)
+
+        // then
+        verify { accountService.updateAccountFromLogin(createAccountMock.login, any()) }
     }
 }

@@ -39,7 +39,7 @@ class SecurityConfig(
             .csrf { it.disable() }
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests { authorize ->
-                authorize.requestMatchers(HttpMethod.POST, "/auth", "/account").permitAll()
+                authorize.requestMatchers(HttpMethod.POST, "/auth/**", "/account/register/**").permitAll()
                 authorize.anyRequest().authenticated()
             }
             .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter::class.java)

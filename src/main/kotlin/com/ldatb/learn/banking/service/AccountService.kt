@@ -1,12 +1,14 @@
 package com.ldatb.learn.banking.service
 
 import com.ldatb.learn.banking.controller.AccountController
-import com.ldatb.learn.banking.dto.request.CreateAccountRequestDTO
+import com.ldatb.learn.banking.domain.request.CreateAccountRequestDomain
+import com.ldatb.learn.banking.domain.request.UpdateAccountRequestDomain
 import com.ldatb.learn.banking.model.Account
 import com.ldatb.learn.banking.repository.AccountRepository
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import java.util.UUID
+import kotlin.reflect.full.memberProperties
 
 /**
  * Implements CRUD methods for the [Account] entity by leveraging the [AccountRepository] repository
@@ -17,15 +19,13 @@ import java.util.UUID
 class AccountService(
     private val accountRepository: AccountRepository
 ) {
-    // CREATE
-
     /**
      * Creates a new [Account] and insert it into the database
      *
-     * @param data is a [CreateAccountRequestDTO] request model
+     * @param data is a [CreateAccountRequestDomain] request model
      * @return an [Account] entity
      */
-    fun createAccount(data: CreateAccountRequestDTO): Account {
+    fun createAccount(data: CreateAccountRequestDomain): Account {
         // Create new [Account] instance based on the given data
         var newAccount = Account(
             login = data.login,
@@ -40,11 +40,8 @@ class AccountService(
         }
 
         // Save the new [Account] into the database
-        newAccount = accountRepository.save(newAccount)
-        return newAccount
+        return accountRepository.save(newAccount)
     }
-
-    // READ
 
     /**
      * Fetches an [Account] based on the [Account.login] parameter
@@ -64,8 +61,36 @@ class AccountService(
     fun getAccountFromTransferKey(transferKey: String): Account? =
         accountRepository.findAccountByTransferKey(transferKey)
 
-    // UPDATE
-    // DELETE
+    /**
+     * Updates an [Account] based on an [UpdateAccountRequestDomain] request
+     *
+     * @param login the [Account.login] value
+     * @param valuesToUpdate an [UpdateAccountRequestDomain] request
+     *
+     * @return a non-nullable [Account] entity
+     */
+    fun updateAccountFromLogin(login: String, valuesToUpdate: UpdateAccountRequestDomain): Account {
+        // Find the account
+        // Not nullable since this was already verified by the [AccountController]
+        var account = getAccountByLogin(login)!!
+
+        // Update every non-null field
+        for (property in UpdateAccountRequestDomain::class.memberProperties) {
+            if (property.get(valuesToUpdate) != null) {
+                when (property.name) {
+                    "login" -> account.login = valuesToUpdate.login!!
+                    "transferKey" -> account.transferKey = valuesToUpdate.transferKey!!
+                    "password" -> account.hashedPassword = BCryptPasswordEncoder().encode(valuesToUpdate.password!!)
+                    "secretToken" -> account.secretToken = valuesToUpdate.secretToken!!
+                    "firstName" -> account.firstName = valuesToUpdate.firstName!!
+                    "lastName" -> account.lastName = valuesToUpdate.lastName!!
+                }
+            }
+        }
+
+        // All values update, so save the account
+        return accountRepository.save(account)
+    }
 
     /**
      * Deletes an [Account] based on the [login] given by the
